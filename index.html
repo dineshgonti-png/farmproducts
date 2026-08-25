@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FarmProducts — Organic Turmeric &amp; Corn, Straight From The Farm</title>
+<meta name="description" content="FarmProducts grows and sells certified-organic turmeric and corn — Lakadong haldi, high-curcumin powders, sweet corn, makki atta and popcorn — shipped direct from the farms that grow them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌽</text></svg>">
+</head>
+<body>
+
+<div class="topbar">Harvest week: <strong>15% off</strong> Lakadong turmeric &amp; sweet corn crates · Free delivery over ₹599</div>
+
+<header class="header">
+  <div class="wrap header__inner">
+    <a class="logo" href="index.html">
+      <span class="logo__mark">🌽</span>
+      <span>FarmProducts<small>Turmeric &amp; Corn</small></span>
+    </a>
+    <nav class="nav">
+      <a href="index.html" class="is-active">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="shop.html?cat=turmeric-powder">Turmeric</a>
+      <a href="shop.html?cat=corn-fresh">Corn</a>
+      <a href="about.html">Our Farms</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="header__actions">
+      <form class="search" data-header-search>
+        <span>🔍</span><input type="search" placeholder="Search turmeric, corn…" aria-label="Search products">
+      </form>
+      <button class="icon-btn burger" data-burger aria-label="Menu">☰</button>
+      <button class="icon-btn" data-open-cart aria-label="Open basket">🧺
+        <span class="cart-count" data-cart-count style="display:none">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <p class="eyebrow">Certified organic · India Organic &amp; USDA NOP</p>
+      <h1>Two crops. Grown <span>properly.</span> Sent straight to you.</h1>
+      <p class="lede">We farm just two things and try to do them exceptionally well — high-curcumin turmeric from the Jaintia Hills and Erode, and open-pollinated corn from the Malwa plateau. No middlemen, no polishing agents, no mystery blends.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary" href="shop.html">Shop the harvest →</a>
+        <a class="btn btn--ghost" href="#subscribe">Monthly crates</a>
+      </div>
+      <ul class="hero__points">
+        <li><i>🧪</i> Lab-tested curcumin on every batch</li>
+        <li><i>🚜</i> 340+ partner farmers</li>
+        <li><i>🚚</i> Harvest to doorstep in 48 hrs</li>
+      </ul>
+    </div>
+    <div class="hero__art">
+      <div class="hero__basket">
+        <div class="hero__tile" style="background:#fdeecb">🫚</div>
+        <div class="hero__tile" style="background:#f4f3d5">🌽</div>
+        <div class="hero__tile" style="background:#fdf1d1">🟡</div>
+        <div class="hero__tile" style="background:#f3f4e4">🍿</div>
+        <div class="hero__tile" style="background:#f7ecd6">🍵</div>
+        <div class="hero__tile" style="background:#f7f0dd">🌾</div>
+      </div>
+      <div class="hero__badge hero__badge--a"><span>🧪</span><div>7.2% curcumin<small>Lakadong, batch #LK-118</small></div></div>
+      <div class="hero__badge hero__badge--b"><span>🌱</span><div>Non-GMO corn<small>Open-pollinated seed</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TRUST ================= -->
+<section class="trust">
+  <div class="wrap trust__grid">
+    <div class="trust__item"><span>🌾</span><div><b>Single-origin</b><small>Every pack names the farm and the batch</small></div></div>
+    <div class="trust__item"><span>🧪</span><div><b>Third-party tested</b><small>Curcumin %, pesticide and aflatoxin reports</small></div></div>
+    <div class="trust__item"><span>💰</span><div><b>Fair farmgate price</b><small>Growers earn 2.3× the mandi rate</small></div></div>
+    <div class="trust__item"><span>♻️</span><div><b>Plastic-free packing</b><small>Kraft, glass and corn-starch liners</small></div></div>
+  </div>
+</section>
+
+<!-- ================= CATEGORIES ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Browse</p>
+        <h2>Shop by shelf</h2>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="shop.html">All products</a>
+    </div>
+    <div class="cats" data-cats></div>
+  </div>
+</section>
+
+<!-- ================= TWO CROPS ================= -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="split" style="gap:24px">
+      <a href="shop.html?cat=turmeric-powder" class="crop" style="background:linear-gradient(140deg,#fdf1d1,#fbe2b6)">
+        <div>
+          <p class="eyebrow">The yellow crop</p>
+          <h2>Turmeric</h2>
+          <p>Lakadong fingers dried on bamboo racks, stone-ground in 20 kg batches. Curcumin printed on the label — because it varies, and you deserve to know.</p>
+          <span class="btn btn--primary btn--sm">Shop turmeric →</span>
+        </div>
+        <span class="crop__ico">🫚</span>
+      </a>
+      <a href="shop.html?cat=corn-fresh" class="crop" style="background:linear-gradient(140deg,#f4f3d5,#e7eec6)">
+        <div>
+          <p class="eyebrow">The golden crop</p>
+          <h2>Corn</h2>
+          <p>Open-pollinated sweet corn and heirloom blue varieties, cut at dawn and packed with husks on. Milled fresh into makki atta and polenta.</p>
+          <span class="btn btn--primary btn--sm">Shop corn →</span>
+        </div>
+        <span class="crop__ico">🌽</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BESTSELLERS ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Kitchen favourites</p>
+        <h2>What people reorder</h2>
+      </div>
+      <a class="btn btn--ghost btn--sm" href="shop.html">View all →</a>
+    </div>
+    <div class="grid-products" data-best></div>
+  </div>
+</section>
+
+<!-- ================= QUALITY BAND ================= -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <p class="eyebrow">Why the curcumin number matters</p>
+        <h2>Most supermarket haldi sits at 2%. Ours starts at 5.4%.</h2>
+        <p class="lede">Curcumin is the compound doing the work, and it depends entirely on variety, soil and how the rhizome is dried. We publish the assay for every batch, so you can compare instead of guessing.</p>
+        <div class="stat-grid">
+          <div class="stat"><b>7.2%</b><small>Lakadong curcumin</small></div>
+          <div class="stat"><b>0</b><small>Added colour or starch</small></div>
+          <div class="stat"><b>48h</b><small>Harvest to dispatch</small></div>
+          <div class="stat"><b>340+</b><small>Partner farmers</small></div>
+        </div>
+      </div>
+      <div class="art-panel">
+        <div style="background:#fdeecb">🫚</div>
+        <div style="background:#f4f3d5">🌽</div>
+        <div style="background:#fdf1d1">🧪</div>
+        <div style="background:#eef0dc">🌱</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DEALS ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <p class="eyebrow">Harvest week</p>
+        <h2>On offer right now</h2>
+      </div>
+      <a class="btn btn--carrot btn--sm" href="shop.html">Grab a deal</a>
+    </div>
+    <div class="grid-products" data-deals></div>
+  </div>
+</section>
+
+<!-- ================= SUBSCRIPTION ================= -->
+<section class="section" id="subscribe" style="background:var(--green-50);border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head center" style="flex-direction:column;align-items:center">
+      <div>
+        <p class="eyebrow">Subscribe &amp; save</p>
+        <h2>Monthly crates, cancel anytime</h2>
+        <p class="lede center">Pick a crate, tell us how often, and we'll ship from whichever batch is freshest that month.</p>
+      </div>
+    </div>
+    <div class="boxes">
+      <div class="box">
+        <h3>Haldi Essentials</h3>
+        <p class="box__price">₹649<small> / month</small></p>
+        <ul>
+          <li>250 g Lakadong turmeric powder</li>
+          <li>150 g turmeric &amp; pepper mix</li>
+          <li>Batch curcumin report</li>
+          <li>Free delivery</li>
+        </ul>
+        <a class="btn btn--ghost btn--block" href="contact.html">Choose crate</a>
+      </div>
+      <div class="box box--featured">
+        <h3>Turmeric &amp; Corn Box</h3>
+        <p class="box__price">₹1,199<small> / month</small></p>
+        <ul>
+          <li>250 g Lakadong turmeric powder</li>
+          <li>1 kg stone-milled makki atta</li>
+          <li>1 kg popcorn kernels</li>
+          <li>250 g golden milk latte mix</li>
+          <li>Free delivery + 10% off add-ons</li>
+        </ul>
+        <a class="btn btn--primary btn--block" href="contact.html">Choose crate</a>
+      </div>
+      <div class="box">
+        <h3>Corn Kitchen</h3>
+        <p class="box__price">₹899<small> / month</small></p>
+        <ul>
+          <li>10 sweet corn cobs</li>
+          <li>1 kg makki atta</li>
+          <li>800 g polenta or grits</li>
+          <li>Free delivery</li>
+        </ul>
+        <a class="btn btn--ghost btn--block" href="contact.html">Choose crate</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= HOW IT WORKS ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head center" style="flex-direction:column;align-items:center">
+      <div><p class="eyebrow">How it works</p><h2>Field to kitchen in four steps</h2></div>
+    </div>
+    <div class="steps">
+      <div class="step"><b>Harvested to order</b><p>Cobs are cut and rhizomes lifted the morning your order is packed — not weeks before.</p></div>
+      <div class="step"><b>Dried &amp; milled slow</b><p>Turmeric sun-dries on bamboo racks, then goes through a stone mill that stays cool.</p></div>
+      <div class="step"><b>Tested &amp; sealed</b><p>Each batch is assayed for curcumin, pesticide residue and aflatoxin before it's sealed.</p></div>
+      <div class="step"><b>At your door</b><p>Cold-chain for fresh corn, kraft pouches for the rest. Most cities in 48 hours.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FARMERS ================= -->
+<section class="section" style="background:#fff;border-block:1px solid var(--line)">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><p class="eyebrow">The growers</p><h2>The people behind the two crops</h2></div>
+      <a class="btn btn--ghost btn--sm" href="about.html">Read their stories →</a>
+    </div>
+    <div class="farmers">
+      <article class="farmer">
+        <div class="farmer__top" style="background:#fdeecb">🫚</div>
+        <div class="farmer__body">
+          <em>Jaintia Hills, Meghalaya</em>
+          <b>Jaintia Hills Co-op</b>
+          <p>Ninety-two families growing Lakadong on terraced slopes at 1,400 m. They've farmed it without chemicals for four generations — the certification just caught up in 2016.</p>
+        </div>
+      </article>
+      <article class="farmer">
+        <div class="farmer__top" style="background:#f4f3d5">🌽</div>
+        <div class="farmer__body">
+          <em>Malwa Plateau, Madhya Pradesh</em>
+          <b>Malwa Corn Growers</b>
+          <p>A 140-farmer collective that switched back to open-pollinated seed in 2019 so they could save and replant their own — and stop paying for hybrids every season.</p>
+        </div>
+      </article>
+      <article class="farmer">
+        <div class="farmer__top" style="background:#f3ecd3">🌿</div>
+        <div class="farmer__body">
+          <em>Erode, Tamil Nadu</em>
+          <b>Erode Spice Farms</b>
+          <p>Third-generation turmeric growers in India's turmeric capital, now running 60 acres on drip irrigation and neem-cake compost instead of urea.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS ================= -->
+<section class="section">
+  <div class="wrap">
+    <div class="sec-head center" style="flex-direction:column;align-items:center">
+      <div><p class="eyebrow">Reviews</p><h2>4.8 average across 2,900 orders</h2></div>
+    </div>
+    <div class="quotes">
+      <article class="quote">
+        <div class="quote__stars">★★★★★</div>
+        <p>The colour difference is ridiculous. I put our old supermarket haldi next to the Lakadong and it looked grey by comparison. Golden milk actually tastes like something now.</p>
+        <div class="quote__who"><div class="avatar">🌼</div><div><b>Ananya R.</b><small>Bengaluru · 9 orders</small></div></div>
+      </article>
+      <article class="quote">
+        <div class="quote__stars">★★★★★</div>
+        <p>Ordered the corn crate on a Tuesday, cobs arrived Thursday still cold and sweet. The makki atta smells like a mill, not like a plastic bag.</p>
+        <div class="quote__who"><div class="avatar">🌽</div><div><b>Harpreet S.</b><small>Chandigarh · 4 orders</small></div></div>
+      </article>
+      <article class="quote">
+        <div class="quote__stars">★★★★☆</div>
+        <p>I buy the curcumin capsules and the pepper blend. Appreciate that they publish the assay — no other brand I found would tell me the actual percentage.</p>
+        <div class="quote__who"><div class="avatar">🧪</div><div><b>Dr. Meera K.</b><small>Pune · 12 orders</small></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ================= NEWSLETTER ================= -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="band">
+      <div>
+        <h2>Know when the good batch lands</h2>
+        <p>Lakadong is harvested once a year and sweet corn runs in short windows. We'll email you when a fresh batch is milled — nothing else.</p>
+      </div>
+      <div>
+        <form class="newsletter" data-fake-form="Thanks — you're on the harvest list 🌾">
+          <input type="email" required placeholder="you@example.com" aria-label="Email address">
+          <button class="btn btn--light" type="submit">Notify me</button>
+        </form>
+        <p class="form-note">About one email a month. Unsubscribe in a click.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap footer__grid">
+    <div>
+      <a class="logo" href="index.html"><span class="logo__mark">🌽</span><span>FarmProducts<small>Turmeric &amp; Corn</small></span></a>
+      <p style="margin-top:14px">A small farm collective growing certified-organic turmeric and corn, selling it direct so growers keep more of what you pay.</p>
+      <div class="socials">
+        <a href="#" aria-label="Instagram">📷</a><a href="#" aria-label="Facebook">📘</a>
+        <a href="#" aria-label="X">✳️</a><a href="#" aria-label="YouTube">▶️</a>
+      </div>
+    </div>
+    <div>
+      <h5>Shop</h5>
+      <ul>
+        <li><a href="shop.html?cat=turmeric-root">Turmeric root</a></li>
+        <li><a href="shop.html?cat=turmeric-powder">Turmeric powder</a></li>
+        <li><a href="shop.html?cat=turmeric-wellness">Turmeric wellness</a></li>
+        <li><a href="shop.html?cat=corn-fresh">Fresh corn</a></li>
+        <li><a href="shop.html?cat=corn-flour">Corn flour &amp; meal</a></li>
+        <li><a href="shop.html?cat=popcorn">Popcorn &amp; snacks</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Company</h5>
+      <ul>
+        <li><a href="about.html">Our farms</a></li>
+        <li><a href="about.html#certs">Certifications</a></li>
+        <li><a href="index.html#subscribe">Subscriptions</a></li>
+        <li><a href="contact.html">Contact us</a></li>
+        <li><a href="contact.html#faq">FAQs</a></li>
+      </ul>
+    </div>
+    <div>
+      <h5>Help</h5>
+      <ul>
+        <li><a href="contact.html#faq">Delivery &amp; returns</a></li>
+        <li><a href="contact.html#faq">Track an order</a></li>
+        <li><a href="contact.html">Bulk &amp; wholesale</a></li>
+        <li><a href="contact.html">Stockist enquiries</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="wrap footer__bottom">
+    <span>© <span data-year>2026</span> FarmProducts Farmer Producer Company Ltd. All rights reserved.</span>
+    <span>Privacy · Terms · Certification: NPOP/NAB/302</span>
+  </div>
+</footer>
+
+<!-- ================= CART ================= -->
+<div class="overlay" data-overlay data-close-cart></div>
+<aside class="drawer" data-drawer aria-label="Shopping basket">
+  <div class="drawer__head">
+    <h3>Your basket</h3>
+    <button class="drawer__close" data-close-cart aria-label="Close">✕</button>
+  </div>
+  <div class="drawer__body" data-cart-body></div>
+  <div class="drawer__foot">
+    <div class="row"><span>Subtotal</span><span data-sub>₹0</span></div>
+    <div class="row"><span>Delivery</span><span data-ship>Free</span></div>
+    <div class="row row--total"><span>Total</span><span data-total>₹0</span></div>
+    <p class="form-note" style="color:var(--green-700);margin:-.6rem 0 .9rem" data-ship-note></p>
+    <button class="btn btn--primary btn--block" data-checkout>Checkout</button>
+  </div>
+</aside>
+
+<div class="toast" data-toast></div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
