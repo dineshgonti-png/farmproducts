@@ -162,7 +162,7 @@ p{margin:0 0 1rem}
 .trust__item small{font-size:.82rem;opacity:.75}
 
 /* ---------- Categories ---------- */
-.cats{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:16px}
 .cat{
   background:#fff;border:1px solid var(--line);border-radius:var(--radius);
   padding:22px 14px;text-align:center;transition:.18s;box-shadow:var(--shadow-sm)
@@ -394,7 +394,6 @@ p{margin:0 0 1rem}
 
 /* ---------- Responsive ---------- */
 @media (max-width:1024px){
-  .cats{grid-template-columns:repeat(3,1fr)}
   .grid-products{grid-template-columns:repeat(3,1fr)}
   .trust__grid{grid-template-columns:repeat(2,1fr)}
   .footer__grid{grid-template-columns:1fr 1fr}
@@ -419,7 +418,6 @@ p{margin:0 0 1rem}
 }
 @media (max-width:640px){
   .section{padding:52px 0}
-  .cats{grid-template-columns:repeat(2,1fr)}
   .grid-products{grid-template-columns:repeat(2,1fr);gap:14px}
   .card__media{font-size:2.6rem}
   .stat-grid{grid-template-columns:repeat(2,1fr)}
@@ -460,3 +458,29 @@ p{margin:0 0 1rem}
 }
 .filters__note b{display:block;margin-bottom:.25rem}
 .filters__note span{color:#6b5a2e}
+
+/* ---------- Telugu name + spec on cards ---------- */
+.card__telugu{
+  font-weight:500;font-size:.82rem;color:var(--muted);
+  font-style:italic;white-space:nowrap
+}
+.card__spec{color:var(--green-700);font-weight:600}
+
+/* ---------- Variety comparison table ---------- */
+.table-scroll{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--line);background:#fff}
+.vtable{border-collapse:collapse;width:100%;min-width:640px;font-size:.92rem}
+.vtable th{
+  text-align:left;font-family:var(--font-body);font-size:.72rem;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;
+  padding:14px 18px;border-bottom:1px solid var(--line);background:var(--green-50)
+}
+.vtable td{padding:14px 18px;border-bottom:1px solid var(--line);color:var(--muted);vertical-align:top}
+.vtable td b{color:var(--ink);font-weight:600}
+.vtable tr:last-child td{border-bottom:0}
+.vtable tbody tr:hover{background:var(--green-50)}
+.table-note{font-size:.83rem;color:var(--muted);margin:14px 0 0;max-width:80ch}
+
+/* ---------- Tick list ---------- */
+.tick-list{list-style:none;padding:0;margin:1rem 0 1.6rem;display:grid;gap:.55rem;font-size:.95rem}
+.tick-list li{display:flex;gap:.6rem;align-items:flex-start;color:var(--muted)}
+.tick-list li::before{content:"\2713";color:var(--green-600);font-weight:700}

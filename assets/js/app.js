@@ -22,20 +22,19 @@
   function byId(id) {
     return (window.FP_PRODUCTS || []).filter(function (p) { return p.id === id; })[0];
   }
-  function stars(rating) {
-    var full = Math.round(rating);
-    return "★★★★★".slice(0, full) + "☆☆☆☆☆".slice(0, 5 - full);
-  }
 
   /* ---------------- product card ---------------- */
+  var TAGS = {
+    "high-curcumin": "High curcumin",
+    "rare": "Rare variety",
+    "local": "Local landrace",
+    "seed": "Seed rhizome"
+  };
+
   function tagMarkup(p) {
-    if (p.tags.indexOf("sale") > -1) {
-      var off = Math.round((1 - p.price / p.was) * 100);
-      return '<span class="card__tag card__tag--sale">' + off + "% off</span>";
+    for (var i = 0; i < p.tags.length; i++) {
+      if (TAGS[p.tags[i]]) return '<span class="card__tag">' + TAGS[p.tags[i]] + "</span>";
     }
-    if (p.tags.indexOf("new") > -1) return '<span class="card__tag card__tag--new">New</span>';
-    if (p.tags.indexOf("bestseller") > -1) return '<span class="card__tag">Bestseller</span>';
-    if (p.tags.indexOf("seasonal") > -1) return '<span class="card__tag">In season</span>';
     return "";
   }
 
@@ -44,19 +43,17 @@
       '<article class="card" data-id="' + p.id + '">' +
         '<div class="card__media" style="background-color:' + p.bg + '">' +
           tagMarkup(p) +
-          '<button class="card__fav" aria-label="Save ' + p.name + '">♡</button>' +
+          '<button class="card__fav" aria-label="Save ' + p.name + '">\u2661</button>' +
           "<span>" + p.icon + "</span>" +
         "</div>" +
         '<div class="card__body">' +
-          '<span class="card__farm">' + p.farm + "</span>" +
-          '<h3 class="card__title">' + p.name + "</h3>" +
-          '<p class="card__unit">' + p.unit + "</p>" +
+          '<span class="card__farm">' + p.origin + "</span>" +
+          '<h3 class="card__title">' + p.name +
+            (p.telugu ? ' <span class="card__telugu">' + p.telugu + "</span>" : "") + "</h3>" +
+          '<p class="card__unit">' + p.unit + (p.spec ? ' \u00b7 <span class="card__spec">' + p.spec + "</span>" : "") + "</p>" +
           (p.note ? '<p class="card__note">' + p.note + "</p>" : "") +
-          '<p class="card__rating"><span style="color:#f5b840">' + stars(p.rating) + "</span> " +
-            "<b>" + p.rating.toFixed(1) + "</b> (" + p.reviews + ")</p>" +
           '<div class="card__foot">' +
-            '<span class="price">' + money(p.price) +
-              (p.was ? "<s>" + money(p.was) + "</s>" : "") + "</span>" +
+            '<span class="price">' + money(p.price) + "</span>" +
             '<button class="add" data-add="' + p.id + '">Add</button>' +
           "</div>" +
         "</div>" +
@@ -199,16 +196,16 @@
         if (cats.length && cats.indexOf(p.cat) === -1) return false;
         if (badges.length && !badges.every(function (b) { return p.tags.indexOf(b) > -1; })) return false;
         if (maxPrice && maxPrice.value !== "all" && p.price > Number(maxPrice.value)) return false;
-        if (q && (p.name + " " + p.farm).toLowerCase().indexOf(q) === -1) return false;
+        if (q && (p.name + " " + p.telugu + " " + p.origin + " " + p.spec).toLowerCase().indexOf(q) === -1) return false;
         return true;
       });
 
-      var sort = sortSel ? sortSel.value : "popular";
+      var sort = sortSel ? sortSel.value : "featured";
       list.sort(function (a, b) {
         if (sort === "low") return a.price - b.price;
         if (sort === "high") return b.price - a.price;
-        if (sort === "rating") return b.rating - a.rating;
-        return b.reviews - a.reviews;
+        if (sort === "name") return a.name.localeCompare(b.name);
+        return a.id - b.id;
       });
 
       renderGrid(grid, list);
@@ -242,19 +239,31 @@
       }).join("");
     }
 
-    var best = document.querySelector("[data-best]");
-    if (best) {
-      renderGrid(best, window.FP_PRODUCTS
-        .filter(function (p) { return p.tags.indexOf("bestseller") > -1 || p.rating >= 4.7; })
-        .sort(function (a, b) { return b.reviews - a.reviews; })
-        .slice(0, 8));
+    var turmeric = document.querySelector("[data-turmeric]");
+    if (turmeric) {
+      renderGrid(turmeric, window.FP_PRODUCTS.filter(function (p) { return p.cat === "turmeric"; }));
     }
 
-    var deals = document.querySelector("[data-deals]");
-    if (deals) {
-      renderGrid(deals, window.FP_PRODUCTS
-        .filter(function (p) { return p.tags.indexOf("sale") > -1; })
-        .slice(0, 4));
+    var other = document.querySelector("[data-other]");
+    if (other) {
+      renderGrid(other, window.FP_PRODUCTS.filter(function (p) { return p.cat !== "turmeric"; }));
+    }
+
+    var table = document.querySelector("[data-variety-table]");
+    if (table) {
+      table.innerHTML =
+        "<thead><tr><th>Variety</th><th>Origin</th><th>Character</th><th>Pack</th><th>Rate</th></tr></thead><tbody>" +
+        window.FP_PRODUCTS.filter(function (p) { return p.cat === "turmeric"; }).map(function (p) {
+          return "<tr><td><b>" + p.name + "</b>" +
+            (p.telugu ? ' <span class="card__telugu">' + p.telugu + "</span>" : "") + "</td>" +
+            "<td>" + p.origin + "</td><td>" + p.spec + "</td><td>" + p.unit + "</td>" +
+            "<td>" + money(p.price) + "</td></tr>";
+        }).join("") + "</tbody>";
+    }
+
+    var count = document.querySelector("[data-variety-count]");
+    if (count) {
+      count.textContent = window.FP_PRODUCTS.filter(function (p) { return p.cat === "turmeric"; }).length;
     }
   }
 
