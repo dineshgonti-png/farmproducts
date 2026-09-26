@@ -15,7 +15,7 @@
      Until it is filled in, the forms tell the customer to phone
      instead of silently losing the message.
      ============================================================ */
-  var ORDER_EMAIL = "";
+  var ORDER_EMAIL = "dinesh.gonti7@gmail.com";
 
   var STORE_KEY = "fp_cart_v1";
   var FREE_SHIP = 599;
