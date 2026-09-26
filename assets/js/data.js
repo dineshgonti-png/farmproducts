@@ -6,9 +6,9 @@
      · 6 other crops: sesame, popcorn, sweet corn, toor dal,
        jowar, bajra.
 
-   STOCK: every line is stock:false for now, so the whole catalogue shows
-   as out of stock and takes enquiries instead of orders. Flip a line to
-   stock:true when it is actually available.
+   STOCK: popcorn maize is available (stock:true). Everything else is
+   stock:false, so it shows as out of stock and takes enquiries instead
+   of orders. Flip a line to stock:true when it is actually available.
 
    RATES: only popcorn has a confirmed rate (Rs 100/kg, 26 Sep 2026).
    Every other price is null, which renders as "Rate on request" — the
@@ -77,7 +77,7 @@ window.FP_PRODUCTS = [
     note:"Cut with husks on and moved quickly — the sugars start turning to starch the moment the cob leaves the plant." },
 
   { id:12, name:"Popcorn Maize", telugu:"", cat:"corn", origin:"Telangana",
-    unit:"1 kg", stock:false, price:100, spec:"Popping grade", icon:"🍿", bg:"#f3f4e4", tags:[],
+    unit:"1 kg", stock:true, price:100, spec:"Popping grade", icon:"🍿", bg:"#f3f4e4", tags:[],
     note:"Hard-shelled popping maize, dried down to the moisture level that actually pops rather than splits." },
 
   /* ---------- CHIRUDHANYALU · MILLETS ---------- */

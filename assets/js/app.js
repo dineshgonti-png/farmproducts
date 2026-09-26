@@ -312,7 +312,13 @@
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: payload
       }).then(function (r) {
-        return r.ok;
+        // FormSubmit answers 200 with success:"false" when a form is not yet
+        // activated, so the status code alone is not proof of delivery.
+        return r.json().then(function (data) {
+          return r.ok && String(data && data.success) === "true";
+        }, function () {
+          return false;
+        });
       })["catch"](function () {
         return false;
       });
@@ -379,6 +385,29 @@
       btn.textContent = "Place order";
       toast("Couldn't send that — please try again or call us");
     });
+  }
+
+  /* ---------------- site-wide stock banner ---------------- */
+  function paintStockNote() {
+    var el = document.querySelector("[data-stock-note]");
+    if (!el) return;
+    var inStock = (window.FP_PRODUCTS || []).filter(function (p) { return p.stock; });
+    var out = (window.FP_PRODUCTS || []).length - inStock.length;
+
+    if (!inStock.length) {
+      el.innerHTML = "<b>Currently out of stock.</b> The catalogue is open for enquiries \u2014 " +
+        "tell us the variety and quantity and we'll come back with a rate and a date.";
+      return;
+    }
+    if (!out) {
+      el.innerHTML = "<b>Everything is in stock.</b> Order online, or ask us for a rate on bulk lots.";
+      return;
+    }
+    var names = inStock.map(function (p) {
+      return p.name + (p.price === null ? "" : " \u2014 " + money(p.price) + " / " + p.unit);
+    }).join(", ");
+    el.innerHTML = "<b>Available now: " + names + ".</b> " +
+      "The remaining " + out + " lines are out of stock \u2014 use Enquire on any of them and we'll quote.";
   }
 
   /* ---------------- global wiring ---------------- */
@@ -520,6 +549,7 @@
     });
     if (cart.length !== before) save();
 
+    paintStockNote();
     initHome();
     initShop();
     initChrome();
