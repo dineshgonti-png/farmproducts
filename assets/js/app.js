@@ -5,6 +5,18 @@
 (function () {
   "use strict";
 
+  /* ============================================================
+     ORDERS & ENQUIRIES BY EMAIL
+     Put the address that should receive orders in ORDER_EMAIL below.
+     Submissions are relayed by FormSubmit.co, which needs no account:
+     the FIRST submission after you set this sends a one-time
+     confirmation link to that address. Click it once and every
+     order and enquiry after that lands in the inbox.
+     Until it is filled in, the forms tell the customer to phone
+     instead of silently losing the message.
+     ============================================================ */
+  var ORDER_EMAIL = "";
+
   var STORE_KEY = "fp_cart_v1";
   var FREE_SHIP = 599;
   var cart = load();
@@ -17,6 +29,7 @@
     localStorage.setItem(STORE_KEY, JSON.stringify(cart));
   }
   function money(n) {
+    if (n === null || n === undefined) return "Rate on request";
     return "₹" + n.toLocaleString("en-IN");
   }
   function byId(id) {
@@ -39,12 +52,14 @@
   }
 
   function cardMarkup(p) {
+    var out = !p.stock;
     return (
-      '<article class="card" data-id="' + p.id + '">' +
-        '<div class="card__media" style="background-color:' + p.bg + '">' +
+      '<article class="card' + (out ? " is-out" : "") + '" data-id="' + p.id + '">' +
+        '<div class="card__media' + (out ? " is-out" : "") + '" style="background-color:' + p.bg + '">' +
           tagMarkup(p) +
           '<button class="card__fav" aria-label="Save ' + p.name + '">\u2661</button>' +
           "<span>" + p.icon + "</span>" +
+          (out ? '<span class="stock-ribbon">Out of stock</span>' : "") +
         "</div>" +
         '<div class="card__body">' +
           '<span class="card__farm">' + p.origin + "</span>" +
@@ -53,8 +68,11 @@
           '<p class="card__unit">' + p.unit + (p.spec ? ' \u00b7 <span class="card__spec">' + p.spec + "</span>" : "") + "</p>" +
           (p.note ? '<p class="card__note">' + p.note + "</p>" : "") +
           '<div class="card__foot">' +
-            '<span class="price">' + money(p.price) + "</span>" +
-            '<button class="add" data-add="' + p.id + '">Add</button>' +
+            '<span class="price' + (p.price === null ? " price--ask" : "") + '">' + money(p.price) +
+              (p.price !== null ? ' <small>/ ' + p.unit + "</small>" : "") + "</span>" +
+            (out
+              ? '<a class="add add--enquire" href="contact.html?product=' + encodeURIComponent(p.name) + '">Enquire</a>'
+              : '<button class="add" data-add="' + p.id + '">Add</button>') +
           "</div>" +
         "</div>" +
       "</article>"
@@ -113,7 +131,7 @@
         return (
           '<div class="line">' +
             '<div class="line__img" style="background:' + p.bg + '">' + p.icon + "</div>" +
-            "<div><b>" + p.name + "</b><small>" + p.unit + " · " + p.farm + "</small>" +
+            "<div><b>" + p.name + "</b><small>" + p.unit + " · " + p.origin + "</small>" +
               '<div class="qty">' +
                 '<button data-dec="' + p.id + '" aria-label="Decrease">−</button>' +
                 "<span>" + l.qty + "</span>" +
@@ -189,21 +207,23 @@
     function apply() {
       var cats = [].slice.call(document.querySelectorAll('[data-f="cat"]:checked')).map(function (i) { return i.value; });
       var badges = [].slice.call(document.querySelectorAll('[data-f="tag"]:checked')).map(function (i) { return i.value; });
-      var maxPrice = document.querySelector("[data-f-price]:checked");
+      var stockOpt = document.querySelector("[data-f-stock]:checked");
       var q = (searchInput ? searchInput.value : search).trim().toLowerCase();
 
       var list = window.FP_PRODUCTS.filter(function (p) {
         if (cats.length && cats.indexOf(p.cat) === -1) return false;
         if (badges.length && !badges.every(function (b) { return p.tags.indexOf(b) > -1; })) return false;
-        if (maxPrice && maxPrice.value !== "all" && p.price > Number(maxPrice.value)) return false;
+        if (stockOpt && stockOpt.value === "in" && !p.stock) return false;
         if (q && (p.name + " " + p.telugu + " " + p.origin + " " + p.spec).toLowerCase().indexOf(q) === -1) return false;
         return true;
       });
 
       var sort = sortSel ? sortSel.value : "featured";
       list.sort(function (a, b) {
-        if (sort === "low") return a.price - b.price;
-        if (sort === "high") return b.price - a.price;
+        var ap = a.price === null ? Infinity : a.price;
+        var bp = b.price === null ? Infinity : b.price;
+        if (sort === "low") return ap - bp;
+        if (sort === "high") return (bp === Infinity ? -1 : bp) - (ap === Infinity ? -1 : ap);
         if (sort === "name") return a.name.localeCompare(b.name);
         return a.id - b.id;
       });
@@ -252,12 +272,14 @@
     var table = document.querySelector("[data-variety-table]");
     if (table) {
       table.innerHTML =
-        "<thead><tr><th>Variety</th><th>Origin</th><th>Character</th><th>Pack</th><th>Rate</th></tr></thead><tbody>" +
+        "<thead><tr><th>Variety</th><th>Origin</th><th>Character</th><th>Pack</th><th>Rate</th><th>Status</th></tr></thead><tbody>" +
         window.FP_PRODUCTS.filter(function (p) { return p.cat === "turmeric"; }).map(function (p) {
           return "<tr><td><b>" + p.name + "</b>" +
             (p.telugu ? ' <span class="card__telugu">' + p.telugu + "</span>" : "") + "</td>" +
             "<td>" + p.origin + "</td><td>" + p.spec + "</td><td>" + p.unit + "</td>" +
-            "<td>" + money(p.price) + "</td></tr>";
+            "<td>" + money(p.price) + "</td>" +
+            '<td><span class="pill pill--' + (p.stock ? "in" : "out") + '">' +
+              (p.stock ? "In stock" : "Out of stock") + "</span></td></tr>";
         }).join("") + "</tbody>";
     }
 
@@ -265,6 +287,79 @@
     if (count) {
       count.textContent = window.FP_PRODUCTS.filter(function (p) { return p.cat === "turmeric"; }).length;
     }
+  }
+
+  /* ---------------- sending mail ---------------- */
+  function canSend() { return /.+@.+\..+/.test(ORDER_EMAIL); }
+
+  function send(subject, fields) {
+    return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(ORDER_EMAIL), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(Object.assign({ _subject: subject, _template: "table" }, fields))
+    }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    });
+  }
+
+  function orderSummary() {
+    return cart.map(function (l) {
+      var p = byId(l.id);
+      if (!p) return "";
+      return p.name + " (" + p.unit + ") x " + l.qty +
+        (p.price === null ? " — rate on request" : " — " + money(p.price * l.qty));
+    }).join("\n");
+  }
+
+  /* ---------------- checkout form ---------------- */
+  function showOrderForm() {
+    var body = document.querySelector("[data-cart-body]");
+    var foot = document.querySelector("[data-order-foot]") || document.querySelector(".drawer__foot");
+    if (!body) return;
+    if (foot) foot.style.display = "none";
+    body.innerHTML =
+      '<form class="order-form" data-order-form>' +
+        "<h4>Where should it go?</h4>" +
+        '<div class="field"><label for="o-name">Name</label><input id="o-name" name="name" required></div>' +
+        '<div class="field"><label for="o-phone">Phone</label><input id="o-phone" name="phone" required inputmode="tel"></div>' +
+        '<div class="field"><label for="o-email">Email</label><input id="o-email" name="email" type="email" required></div>' +
+        '<div class="field"><label for="o-addr">Delivery address</label><textarea id="o-addr" name="address" required></textarea></div>' +
+        '<div class="field"><label for="o-note">Anything else?</label><textarea id="o-note" name="notes" style="min-height:70px"></textarea></div>' +
+        '<div class="order-form__items"><b>Your order</b><pre>' + orderSummary() + "</pre></div>" +
+        '<button class="btn btn--primary btn--block" type="submit">Place order</button>' +
+        '<button class="btn btn--ghost btn--block" style="margin-top:8px" type="button" data-order-back>Back to basket</button>' +
+        '<p class="form-note">We\'ll email you to confirm the rate and the dispatch date before anything ships.</p>' +
+      "</form>";
+  }
+
+  function submitOrder(form) {
+    if (!canSend()) {
+      toast("Email delivery isn't set up yet — please call us to order");
+      return;
+    }
+    var btn = form.querySelector('button[type="submit"]');
+    btn.disabled = true;
+    btn.textContent = "Sending…";
+    send("New order from the website", {
+      Name: form.name.value,
+      Phone: form.phone.value,
+      Email: form.email.value,
+      Address: form.address.value,
+      Notes: form.notes.value,
+      Order: orderSummary(),
+      Total: money(subtotal())
+    }).then(function () {
+      cart = [];
+      save();
+      document.querySelector("[data-cart-body]").innerHTML =
+        '<div class="cart-empty"><span>\u2705</span><b>Order received</b>' +
+        "<p>We've got it. You'll hear from us shortly to confirm the rate and when it ships.</p></div>";
+    })["catch"](function () {
+      btn.disabled = false;
+      btn.textContent = "Place order";
+      toast("Couldn't send that — please try again or call us");
+    });
   }
 
   /* ---------------- global wiring ---------------- */
@@ -314,9 +409,40 @@
       });
     });
 
+    document.querySelectorAll("[data-enquiry-form]").forEach(function (form) {
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        if (!canSend()) {
+          toast("Email delivery isn't set up yet — please call us");
+          return;
+        }
+        var btn = form.querySelector('button[type="submit"]');
+        var label = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = "Sending…";
+        send("Website enquiry: " + (form.querySelector("#t") ? form.querySelector("#t").value : "general"), {
+          Name: form.querySelector("#n").value,
+          Contact: form.querySelector("#e").value,
+          About: form.querySelector("#t") ? form.querySelector("#t").value : "",
+          Message: form.querySelector("#m").value
+        }).then(function () {
+          form.reset();
+          toast("Thanks — we'll come back to you with a rate and a date.");
+        })["catch"](function () {
+          toast("Couldn't send that — please try again or call us");
+        }).then(function () {
+          btn.disabled = false;
+          btn.textContent = label;
+        });
+      });
+    });
+
     document.querySelectorAll("[data-fake-form]").forEach(function (form) {
       form.addEventListener("submit", function (e) {
         e.preventDefault();
+        if (canSend()) {
+          send("Stock notification signup", { Email: form.querySelector("input").value })["catch"](function () {});
+        }
         toast(form.getAttribute("data-fake-form"));
         form.reset();
       });
@@ -325,14 +451,56 @@
     var checkout = document.querySelector("[data-checkout]");
     if (checkout) checkout.addEventListener("click", function () {
       if (!cart.length) return toast("Your basket is empty");
-      toast("Demo store — checkout isn't wired up yet 🙂");
+      showOrderForm();
     });
+
+    document.addEventListener("submit", function (e) {
+      if (e.target.hasAttribute("data-order-form")) {
+        e.preventDefault();
+        submitOrder(e.target);
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (e.target.closest && e.target.closest("[data-order-back]")) {
+        var foot = document.querySelector(".drawer__foot");
+        if (foot) foot.style.display = "";
+        paint();
+      }
+    });
+
+    var wanted = new URLSearchParams(location.search).get("product");
+    if (wanted) {
+      var msg = document.querySelector("#m");
+      var subject = document.querySelector("#t");
+      if (msg && !msg.value) {
+        msg.value = "I'd like to enquire about: " + wanted + "\n\nQuantity needed:\nDelivery location:";
+      }
+      if (subject) {
+        for (var i = 0; i < subject.options.length; i++) {
+          if (subject.options[i].text.indexOf("Rate enquiry") === 0) { subject.selectedIndex = i; break; }
+        }
+      }
+      var banner = document.querySelector("[data-enquiry-banner]");
+      if (banner) {
+        banner.textContent = "Enquiring about " + wanted + " \u2014 tell us the quantity and we'll come back with a rate.";
+        banner.style.display = "block";
+      }
+    }
 
     var y = document.querySelector("[data-year]");
     if (y) y.textContent = new Date().getFullYear();
   }
 
   document.addEventListener("DOMContentLoaded", function () {
+    // drop anything a previous visit left in the basket that is no longer sold
+    var before = cart.length;
+    cart = cart.filter(function (l) {
+      var p = byId(l.id);
+      return p && p.stock;
+    });
+    if (cart.length !== before) save();
+
     initHome();
     initShop();
     initChrome();

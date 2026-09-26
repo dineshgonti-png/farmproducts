@@ -484,3 +484,55 @@ p{margin:0 0 1rem}
 .tick-list{list-style:none;padding:0;margin:1rem 0 1.6rem;display:grid;gap:.55rem;font-size:.95rem}
 .tick-list li{display:flex;gap:.6rem;align-items:flex-start;color:var(--muted)}
 .tick-list li::before{content:"\2713";color:var(--green-600);font-weight:700}
+
+/* ---------- Out of stock ---------- */
+.card.is-out{opacity:.94}
+.card__media.is-out > span{filter:grayscale(.55);opacity:.5}
+.stock-ribbon{
+  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+  background:rgba(22,36,28,.82);color:#fff;font-size:.7rem;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;padding:.3rem .7rem;border-radius:999px;
+  white-space:nowrap
+}
+.price--ask{font-size:.92rem;font-weight:600;color:var(--muted)}
+.price small{font-weight:500;font-size:.78rem;color:var(--muted)}
+.add--enquire{
+  background:#fff;color:var(--green-800);border-color:var(--line);
+  display:inline-flex;align-items:center;text-decoration:none
+}
+.add--enquire:hover{background:var(--green-50);border-color:var(--green-500)}
+
+/* status pills in the variety table */
+.pill{
+  display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.05em;
+  padding:.22rem .6rem;border-radius:999px;white-space:nowrap
+}
+.pill--in{background:var(--green-100);color:var(--green-800)}
+.pill--out{background:#efe9e2;color:#6b5a4e}
+
+/* banner above the contact form when arriving from an Enquire link */
+.enquiry-banner{
+  display:none;background:#fdf1d1;border:1px solid #f0dfae;color:#6b5a2e;
+  border-radius:12px;padding:12px 14px;font-size:.88rem;margin-bottom:18px
+}
+
+/* site-wide stock notice */
+.stock-note{
+  background:#fdf1d1;border-bottom:1px solid #f0dfae;color:#6b5a2e;
+  text-align:center;padding:.6rem 16px;font-size:.86rem
+}
+.stock-note b{color:#4a3d1c}
+
+/* ---------- Checkout form in the drawer ---------- */
+.order-form h4{font-family:var(--font-body);font-size:.95rem;margin:0 0 14px}
+.order-form .field{margin-bottom:12px}
+.order-form textarea{min-height:90px}
+.order-form__items{
+  background:var(--green-50);border:1px solid var(--line);border-radius:12px;
+  padding:12px 14px;margin:6px 0 16px;font-size:.85rem
+}
+.order-form__items b{display:block;margin-bottom:.4rem;font-size:.8rem;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.order-form__items pre{
+  margin:0;font:inherit;white-space:pre-wrap;color:var(--ink)
+}

@@ -26,6 +26,26 @@ render from it.
 
 Then open http://localhost:4321.
 
-### Note
+### Stock
 
-Demo storefront — checkout and the contact form are not wired to a backend.
+Every product currently has `stock: false`, so the whole catalogue shows as
+out of stock and offers an **Enquire** button instead of **Add**. To put a
+line back on sale, set `stock: true` on it in `assets/js/data.js` and give it
+a real `price` (a `price` of `null` renders as "Rate on request").
+
+Only popcorn maize has a confirmed rate right now: Rs 100 / kg.
+
+### Orders by email
+
+Orders and enquiries are relayed to email by [FormSubmit](https://formsubmit.co),
+which needs no account. Set `ORDER_EMAIL` at the top of `assets/js/app.js` to
+the address that should receive them:
+
+    var ORDER_EMAIL = "orders@example.com";
+
+The first submission after that sends a one-time confirmation link to that
+address — click it once, and every order, enquiry and stock-notification
+signup afterwards lands in the inbox. Until it is set, the forms tell the
+customer to phone instead of silently dropping the message.
+
+Customer details pass through FormSubmit's servers on the way to the inbox.
