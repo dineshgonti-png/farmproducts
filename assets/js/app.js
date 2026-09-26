@@ -7,15 +7,22 @@
 
   /* ============================================================
      ORDERS & ENQUIRIES BY EMAIL
-     Put the address that should receive orders in ORDER_EMAIL below.
-     Submissions are relayed by FormSubmit.co, which needs no account:
-     the FIRST submission after you set this sends a one-time
-     confirmation link to that address. Click it once and every
-     order and enquiry after that lands in the inbox.
-     Until it is filled in, the forms tell the customer to phone
-     instead of silently losing the message.
+     Every address listed here gets its own copy of each order and
+     enquiry. Add or remove addresses freely.
+
+     Relayed by FormSubmit.co, which needs no account. EACH address
+     must be confirmed once: the first submission sent to it triggers
+     a one-time activation email to that inbox — click the link in it
+     and everything afterwards arrives normally.
+
+     An order is treated as sent if at least one address accepts it,
+     so a recipient who has not confirmed yet cannot block orders
+     from reaching the one who has.
      ============================================================ */
-  var ORDER_EMAIL = "dinesh.gonti7@gmail.com";
+  var ORDER_EMAILS = [
+    "dinesh.gonti7@gmail.com",
+    "nalimelaabhinavreddy@gmail.com"
+  ];
 
   var STORE_KEY = "fp_cart_v1";
   var FREE_SHIP = 599;
@@ -290,16 +297,28 @@
   }
 
   /* ---------------- sending mail ---------------- */
-  function canSend() { return /.+@.+\..+/.test(ORDER_EMAIL); }
+  function recipients() {
+    return (ORDER_EMAILS || []).filter(function (a) { return /.+@.+\..+/.test(a); });
+  }
+  function canSend() { return recipients().length > 0; }
 
   function send(subject, fields) {
-    return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(ORDER_EMAIL), {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(Object.assign({ _subject: subject, _template: "table" }, fields))
-    }).then(function (r) {
-      if (!r.ok) throw new Error("HTTP " + r.status);
-      return r.json();
+    var payload = JSON.stringify(
+      Object.assign({ _subject: subject, _template: "table" }, fields)
+    );
+    return Promise.all(recipients().map(function (addr) {
+      return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(addr), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: payload
+      }).then(function (r) {
+        return r.ok;
+      })["catch"](function () {
+        return false;
+      });
+    })).then(function (results) {
+      if (results.indexOf(true) === -1) throw new Error("no recipient accepted the message");
+      return results;
     });
   }
 

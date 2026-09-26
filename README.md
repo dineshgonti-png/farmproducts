@@ -38,14 +38,27 @@ Only popcorn maize has a confirmed rate right now: Rs 100 / kg.
 ### Orders by email
 
 Orders and enquiries are relayed to email by [FormSubmit](https://formsubmit.co),
-which needs no account. Set `ORDER_EMAIL` at the top of `assets/js/app.js` to
-the address that should receive them:
+which needs no account. The recipients are listed at the top of
+`assets/js/app.js` — every address in the list gets its own copy:
 
-    var ORDER_EMAIL = "orders@example.com";
+    var ORDER_EMAILS = [
+      "someone@example.com",
+      "someoneelse@example.com"
+    ];
 
-The first submission after that sends a one-time confirmation link to that
-address — click it once, and every order, enquiry and stock-notification
-signup afterwards lands in the inbox. Until it is set, the forms tell the
-customer to phone instead of silently dropping the message.
+**Each address must be confirmed once.** The first submission sent to a new
+address triggers an activation email to that inbox; click the link in it and
+everything afterwards arrives normally. An order counts as sent if at least
+one address accepts it, so an unconfirmed recipient cannot block the others.
 
-Customer details pass through FormSubmit's servers on the way to the inbox.
+Until the list is filled in, the forms tell the customer to phone rather than
+silently dropping the message.
+
+Two caveats worth knowing:
+
+- Customer names, phones and addresses pass through FormSubmit's servers on
+  the way to the inbox.
+- This repository is public, so any address in the list is visible in the page
+  source and will eventually be found by scrapers. FormSubmit issues a random
+  token you can POST to instead of the address itself — swap it in once the
+  addresses are confirmed if you would rather not publish them.
