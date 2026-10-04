@@ -20,11 +20,9 @@
      from reaching the one who has.
      ============================================================ */
   /* The FIRST address is the one FormSubmit posts to, so it is the one
-     that must be activated. Everyone after it is copied in automatically
-     and does NOT need to activate anything. dinesh.gonti7@gmail.com is
-     activated, so it stays first. */
+     that must be activated. Anyone listed after it is copied in and does
+     NOT need to activate anything. */
   var ORDER_EMAILS = [
-    "dinesh.gonti7@gmail.com",
     "nalimelaabhinavreddy@gmail.com"
   ];
 
