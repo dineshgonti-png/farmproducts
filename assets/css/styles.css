@@ -536,3 +536,10 @@ p{margin:0 0 1rem}
 .order-form__items pre{
   margin:0;font:inherit;white-space:pre-wrap;color:var(--ink)
 }
+
+/* order failure, shown in place rather than as a vanishing toast */
+.order-error{
+  background:#fdecea;border:1px solid #f3c6c0;color:#8a2f22;
+  border-radius:12px;padding:12px 14px;font-size:.86rem;margin:0 0 14px;line-height:1.5
+}
+.order-error a{text-decoration:underline;font-weight:600}

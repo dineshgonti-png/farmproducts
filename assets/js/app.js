@@ -383,7 +383,18 @@
     })["catch"](function () {
       btn.disabled = false;
       btn.textContent = "Place order";
-      toast("Couldn't send that — please try again or call us");
+      var warn = form.querySelector("[data-order-error]");
+      if (!warn) {
+        warn = document.createElement("p");
+        warn.className = "order-error";
+        warn.setAttribute("data-order-error", "");
+        form.insertBefore(warn, btn);
+      }
+      warn.innerHTML = "We couldn't send that order just now, and nothing has been " +
+        "charged or dispatched. Your details are still filled in \u2014 try again, or " +
+        'reach us from the <a href="contact.html">contact page</a> and we\'ll take the ' +
+        "order directly.";
+      toast("Couldn't send that — your order was not placed");
     });
   }
 
