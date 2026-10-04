@@ -1,5 +1,5 @@
 /* ============================================================
-   FarmProducts — storefront behaviour
+   FarmProducts storefront behaviour
    Cart persists in localStorage; product grids render from data.js
    ============================================================ */
 (function () {
@@ -12,7 +12,7 @@
 
      Relayed by FormSubmit.co, which needs no account. EACH address
      must be confirmed once: the first submission sent to it triggers
-     a one-time activation email to that inbox — click the link in it
+     a one-time activation email to that inbox click the link in it
      and everything afterwards arrives normally.
 
      An order is treated as sent if at least one address accepts it,
@@ -36,6 +36,13 @@
   function save() {
     localStorage.setItem(STORE_KEY, JSON.stringify(cart));
   }
+  function artFor(o) {
+    return (window.FP_ART && window.FP_ART[o.art]) || "";
+  }
+  function ico(name) {
+    return (window.FP_ICON && window.FP_ICON[name]) || "";
+  }
+
   function money(n) {
     if (n === null || n === undefined) return "Rate on request";
     return "₹" + n.toLocaleString("en-IN");
@@ -65,8 +72,8 @@
       '<article class="card' + (out ? " is-out" : "") + '" data-id="' + p.id + '">' +
         '<div class="card__media' + (out ? " is-out" : "") + '" style="background-color:' + p.bg + '">' +
           tagMarkup(p) +
-          '<button class="card__fav" aria-label="Save ' + p.name + '">\u2661</button>' +
-          "<span>" + p.icon + "</span>" +
+          '<button class="card__fav" aria-label="Save ' + p.name + '">' + ico("heart") + "</button>" +
+          '<span class="card__art">' + artFor(p) + "</span>" +
           (out ? '<span class="stock-ribbon">Out of stock</span>' : "") +
         "</div>" +
         '<div class="card__body">' +
@@ -130,7 +137,7 @@
 
     if (!cart.length) {
       body.innerHTML =
-        '<div class="cart-empty"><span>🧺</span><b>Your basket is empty</b>' +
+        '<div class="cart-empty"><span class="cart-empty__ico">' + ico("basket") + '</span><b>Your basket is empty</b>' +
         "<p>Add some just-harvested produce to get going.</p></div>";
     } else {
       body.innerHTML = cart.map(function (l) {
@@ -138,7 +145,7 @@
         if (!p) return "";
         return (
           '<div class="line">' +
-            '<div class="line__img" style="background:' + p.bg + '">' + p.icon + "</div>" +
+            '<div class="line__img" style="background:' + p.bg + '">' + artFor(p) + "</div>" +
             "<div><b>" + p.name + "</b><small>" + p.unit + " · " + p.origin + "</small>" +
               '<div class="qty">' +
                 '<button data-dec="' + p.id + '" aria-label="Decrease">−</button>' +
@@ -164,7 +171,7 @@
     if (totEl) totEl.textContent = money(sub + ship);
     if (noteEl) {
       noteEl.textContent = sub === 0 ? ""
-        : sub >= FREE_SHIP ? "🎉 You've unlocked free delivery."
+        : sub >= FREE_SHIP ? "Free delivery unlocked."
         : "Add " + money(FREE_SHIP - sub) + " more for free delivery.";
     }
   }
@@ -262,7 +269,7 @@
     if (catGrid) {
       catGrid.innerHTML = window.FP_CATEGORIES.map(function (c) {
         return '<a class="cat" href="shop.html?cat=' + c.id + '">' +
-          '<div class="cat__ico" style="background:' + c.bg + '">' + c.icon + "</div>" +
+          '<div class="cat__ico" style="background:' + c.bg + '">' + artFor(c) + "</div>" +
           "<b>" + c.name + "</b><small>" + c.note + "</small></a>";
       }).join("");
     }
@@ -334,7 +341,7 @@
       var p = byId(l.id);
       if (!p) return "";
       return p.name + " (" + p.unit + ") x " + l.qty +
-        (p.price === null ? " — rate on request" : " — " + money(p.price * l.qty));
+        (p.price === null ? " rate on request" : " " + money(p.price * l.qty));
     }).join("\n");
   }
 
@@ -387,7 +394,7 @@
 
   function submitOrder(form) {
     if (!canSend()) {
-      toast("Ordering isn't set up yet — please contact us directly");
+      toast("Ordering isn't set up yet please contact us directly");
       return;
     }
     var btn = form.querySelector('button[type="submit"]');
@@ -408,7 +415,7 @@
       var foot2 = document.querySelector(".drawer__foot");
       if (foot2) foot2.style.display = "none";
       document.querySelector("[data-cart-body]").innerHTML =
-        '<div class="cart-empty"><span>\u2705</span><b>Order received</b>' +
+        '<div class="cart-empty"><span class="cart-empty__ico cart-empty__ico--ok">' + ico("check") + '</span><b>Order received</b>' +
         "<p>We've got it. You'll hear from us shortly to confirm the rate and when it ships.</p></div>";
     })["catch"](function () {
       btn.disabled = false;
@@ -421,16 +428,25 @@
         form.insertBefore(warn, btn);
       }
       warn.innerHTML = "We couldn't send that order automatically, and nothing has been " +
-        "charged or dispatched. Send it to us directly instead \u2014 your details are " +
+        "charged or dispatched. Send it to us directly instead. Your details are " +
         "already filled in below." +
         '<br><br><a class="btn btn--primary btn--block" style="margin-bottom:8px" href="' +
         mailtoLink(form) + '">Send this order by email</a>' +
         '<a class="btn btn--ghost btn--block" href="contact.html">Or contact us</a>';
-      toast("Couldn't send automatically — send it directly below");
+      toast("Couldn't send automatically send it directly below");
     });
   }
 
   /* ---------------- site-wide stock banner ---------------- */
+  function paintDecorArt() {
+    document.querySelectorAll("[data-art]").forEach(function (el) {
+      var key = el.getAttribute("data-art");
+      if (window.FP_ART && window.FP_ART[key] && !el.firstElementChild) {
+        el.innerHTML = window.FP_ART[key];
+      }
+    });
+  }
+
   function paintStockNote() {
     var el = document.querySelector("[data-stock-note]");
     if (!el) return;
@@ -438,8 +454,8 @@
     var out = (window.FP_PRODUCTS || []).length - inStock.length;
 
     if (!inStock.length) {
-      el.innerHTML = "<b>Currently out of stock.</b> The catalogue is open for enquiries \u2014 " +
-        "tell us the variety and quantity and we'll come back with a rate and a date.";
+      el.innerHTML = "<b>Currently out of stock.</b> The catalogue is open for enquiries. " +
+        "Tell us the variety and quantity and we'll come back with a rate and a date.";
       return;
     }
     if (!out) {
@@ -447,10 +463,10 @@
       return;
     }
     var names = inStock.map(function (p) {
-      return p.name + (p.price === null ? "" : " \u2014 " + money(p.price) + " / " + p.unit);
+      return p.name + (p.price === null ? "" : " " + money(p.price) + " / " + p.unit);
     }).join(", ");
     el.innerHTML = "<b>Available now: " + names + ".</b> " +
-      "The remaining " + out + " lines are out of stock \u2014 use Enquire on any of them and we'll quote.";
+      "The remaining " + out + " lines are out of stock. Use Enquire on any of them and we'll quote.";
   }
 
   /* ---------------- global wiring ---------------- */
@@ -461,7 +477,7 @@
       var addBtn = t.closest ? t.closest("[data-add]") : null;
       if (addBtn) {
         add(Number(addBtn.getAttribute("data-add")));
-        addBtn.textContent = "Added ✓";
+        addBtn.textContent = "Added";
         addBtn.classList.add("is-added");
         setTimeout(function () {
           addBtn.textContent = "Add";
@@ -478,7 +494,7 @@
       var fav = t.closest ? t.closest(".card__fav") : null;
       if (fav) {
         fav.classList.toggle("is-on");
-        fav.textContent = fav.classList.contains("is-on") ? "♥" : "♡";
+        fav.innerHTML = ico("heart");
         toast(fav.classList.contains("is-on") ? "Saved to your list" : "Removed from your list");
       }
     });
@@ -504,7 +520,7 @@
       form.addEventListener("submit", function (e) {
         e.preventDefault();
         if (!canSend()) {
-          toast("Email delivery isn't set up yet — please call us");
+          toast("Email delivery isn't set up yet please call us");
           return;
         }
         var btn = form.querySelector('button[type="submit"]');
@@ -518,9 +534,9 @@
           Message: form.querySelector("#m").value
         }).then(function () {
           form.reset();
-          toast("Thanks — we'll come back to you with a rate and a date.");
+          toast("Thanks we'll come back to you with a rate and a date.");
         })["catch"](function () {
-          toast("Couldn't send that — please try again or call us");
+          toast("Couldn't send that please try again or call us");
         }).then(function () {
           btn.disabled = false;
           btn.textContent = label;
@@ -574,7 +590,7 @@
       }
       var banner = document.querySelector("[data-enquiry-banner]");
       if (banner) {
-        banner.textContent = "Enquiring about " + wanted + " \u2014 tell us the quantity and we'll come back with a rate.";
+        banner.textContent = "Enquiring about " + wanted + ". Tell us the quantity and we'll come back with a rate.";
         banner.style.display = "block";
       }
     }
@@ -592,6 +608,7 @@
     });
     if (cart.length !== before) save();
 
+    paintDecorArt();
     paintStockNote();
     initHome();
     initShop();

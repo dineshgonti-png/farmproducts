@@ -1,6 +1,6 @@
 # FarmProducts
 
-An online store for certified-organic **turmeric and corn** — two crops, nothing else.
+An online store for certified-organic **turmeric and corn**. Two crops, nothing else.
 
 Static site: plain HTML, CSS and vanilla JS. No build step, no dependencies.
 
@@ -13,11 +13,11 @@ Static site: plain HTML, CSS and vanilla JS. No build step, no dependencies.
 
 ### Structure
 
-    assets/js/data.js   catalogue — FP_CATEGORIES + FP_PRODUCTS
+    assets/js/data.js   catalogue, FP_CATEGORIES + FP_PRODUCTS
     assets/js/app.js    cart (localStorage), filtering, rendering
     assets/css/styles.css
 
-To add or change a product, edit `assets/js/data.js` — both the homepage and shop
+To add or change a product, edit `assets/js/data.js`, both the homepage and shop
 render from it.
 
 ### Deploying a change
@@ -50,7 +50,7 @@ Only popcorn maize has a confirmed rate right now: Rs 100 / kg.
 
 Orders and enquiries are relayed to email by [FormSubmit](https://formsubmit.co),
 which needs no account. The recipients are listed at the top of
-`assets/js/app.js` — every address in the list gets its own copy:
+`assets/js/app.js`, every address in the list gets its own copy:
 
     var ORDER_EMAILS = [
       "someone@example.com",
@@ -71,5 +71,5 @@ Two caveats worth knowing:
   the way to the inbox.
 - This repository is public, so any address in the list is visible in the page
   source and will eventually be found by scrapers. FormSubmit issues a random
-  token you can POST to instead of the address itself — swap it in once the
+  token you can POST to instead of the address itself, swap it in once the
   addresses are confirmed if you would rather not publish them.
