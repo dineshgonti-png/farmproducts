@@ -381,7 +381,7 @@
         '<div class="order-form__items"><b>Your order</b><pre>' + orderSummary() + "</pre></div>" +
         '<button class="btn btn--primary btn--block" type="submit">Place order</button>' +
         '<button class="btn btn--ghost btn--block" style="margin-top:8px" type="button" data-order-back>Back to basket</button>' +
-        '<p class="form-note">We\'ll email you to confirm the rate and the dispatch date before anything ships.</p>' +
+        '<p class="form-note">We\'ll email you to confirm the rate and the dispatch date before anything ships. Prefer to talk? Call <a href="tel:+918106457000">+91 81064 57000</a>.</p>' +
       "</form>";
   }
 

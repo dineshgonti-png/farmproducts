@@ -543,3 +543,11 @@ p{margin:0 0 1rem}
   border-radius:12px;padding:12px 14px;font-size:.86rem;margin:0 0 14px;line-height:1.5
 }
 .order-error a{text-decoration:underline;font-weight:600}
+
+/* phone number in the top strip and footer */
+.topbar__tel{color:var(--sun);font-weight:700;white-space:nowrap}
+.topbar__tel:hover{text-decoration:underline}
+.footer__tel{margin:16px 0 0}
+.footer__tel a{color:#fff;font-weight:600;font-size:1.02rem}
+.footer__tel a:hover{color:var(--sun)}
+.footer__tel small{display:block;color:#93b19f;font-size:.82rem;margin-top:2px}
