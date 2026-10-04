@@ -24,18 +24,6 @@
     "nalimelaabhinavreddy@gmail.com"
   ];
 
-  /* ============================================================
-     WHATSAPP (primary route for orders)
-     The number orders should reach, with country code and no
-     spaces, "+" or dashes. An Indian mobile looks like
-     "917674064488" — 91 followed by the ten digits.
-
-     When this is set, "Place order" opens WhatsApp with the items,
-     customer details and delivery address already written out, so
-     nothing depends on an email service being activated. Leave it
-     empty to fall back to email only.
-     ============================================================ */
-  var ORDER_WHATSAPP = "918106457000";
 
   var STORE_KEY = "fp_cart_v1";
   var FREE_SHIP = 599;
@@ -350,13 +338,6 @@
     }).join("\n");
   }
 
-  /* ---------------- whatsapp ---------------- */
-  function waReady() { return /^\d{10,15}$/.test(ORDER_WHATSAPP); }
-
-  function waLink(text) {
-    return "https://wa.me/" + ORDER_WHATSAPP + "?text=" + encodeURIComponent(text);
-  }
-
   function mailtoLink(f) {
     return "mailto:" + recipients().join(",") +
       "?subject=" + encodeURIComponent("New order from farmproducts.in") +
@@ -398,39 +379,13 @@
         '<div class="field"><label for="o-addr">Delivery address</label><textarea id="o-addr" name="address" required></textarea></div>' +
         '<div class="field"><label for="o-note">Anything else?</label><textarea id="o-note" name="notes" style="min-height:70px"></textarea></div>' +
         '<div class="order-form__items"><b>Your order</b><pre>' + orderSummary() + "</pre></div>" +
-        '<button class="btn btn--primary btn--block" type="submit">' +
-          (waReady() ? "Place order on WhatsApp" : "Place order") + "</button>" +
+        '<button class="btn btn--primary btn--block" type="submit">Place order</button>' +
         '<button class="btn btn--ghost btn--block" style="margin-top:8px" type="button" data-order-back>Back to basket</button>' +
         '<p class="form-note">We\'ll email you to confirm the rate and the dispatch date before anything ships.</p>' +
       "</form>";
   }
 
   function submitOrder(form) {
-    if (waReady()) {
-      var win = window.open(waLink(orderText(form)), "_blank");
-      // quietly copy to email too, if that route is ever activated
-      if (canSend()) {
-        send("New order from the website", {
-          Name: form.name.value, Phone: form.phone.value, Email: form.email.value,
-          Address: form.address.value, Notes: form.notes.value,
-          Order: orderSummary(), Total: money(subtotal())
-        })["catch"](function () {});
-      }
-      cart = [];
-      save();
-      paint();           // clears the badge and totals
-      var foot = document.querySelector(".drawer__foot");
-      if (foot) foot.style.display = "none";
-      document.querySelector("[data-cart-body]").innerHTML =
-        '<div class="cart-empty"><span>\u2705</span><b>Order ready to send</b>' +
-        "<p>WhatsApp should have opened with your order written out \u2014 press send and " +
-        "we'll confirm the rate and dispatch date." +
-        (win ? "" : '<br><br><a class="btn btn--primary" href="' + waLink(orderText(form)) +
-          '" target="_blank" rel="noopener">Open WhatsApp</a>') +
-        "</p></div>";
-      return;
-    }
-
     if (!canSend()) {
       toast("Ordering isn't set up yet — please contact us directly");
       return;
@@ -457,7 +412,7 @@
         "<p>We've got it. You'll hear from us shortly to confirm the rate and when it ships.</p></div>";
     })["catch"](function () {
       btn.disabled = false;
-      btn.textContent = waReady() ? "Place order on WhatsApp" : "Place order";
+      btn.textContent = "Place order";
       var warn = form.querySelector("[data-order-error]");
       if (!warn) {
         warn = document.createElement("p");
