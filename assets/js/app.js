@@ -35,7 +35,7 @@
      nothing depends on an email service being activated. Leave it
      empty to fall back to email only.
      ============================================================ */
-  var ORDER_WHATSAPP = "";
+  var ORDER_WHATSAPP = "918106457000";
 
   var STORE_KEY = "fp_cart_v1";
   var FREE_SHIP = 599;
