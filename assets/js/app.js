@@ -19,6 +19,10 @@
      so a recipient who has not confirmed yet cannot block orders
      from reaching the one who has.
      ============================================================ */
+  /* The FIRST address is the one FormSubmit posts to, so it is the one
+     that must be activated. Everyone after it is copied in automatically
+     and does NOT need to activate anything. dinesh.gonti7@gmail.com is
+     activated, so it stays first. */
   var ORDER_EMAILS = [
     "dinesh.gonti7@gmail.com",
     "nalimelaabhinavreddy@gmail.com"
@@ -310,29 +314,47 @@
   }
   function canSend() { return recipients().length > 0; }
 
-  function send(subject, fields) {
-    var payload = JSON.stringify(
-      Object.assign({ _subject: subject, _template: "table" }, fields)
-    );
-    return Promise.all(recipients().map(function (addr) {
-      return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(addr), {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: payload
-      }).then(function (r) {
-        // FormSubmit answers 200 with success:"false" when a form is not yet
-        // activated, so the status code alone is not proof of delivery.
-        return r.json().then(function (data) {
-          return r.ok && String(data && data.success) === "true";
-        }, function () {
-          return false;
-        });
-      })["catch"](function () {
+  function post(addr, payload) {
+    return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(addr), {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function (r) {
+      // FormSubmit answers 200 with success:"false" when a form is not yet
+      // activated, so the status code alone is not proof of delivery.
+      return r.json().then(function (data) {
+        return r.ok && String(data && data.success) === "true";
+      }, function () {
         return false;
       });
-    })).then(function (results) {
-      if (results.indexOf(true) === -1) throw new Error("no recipient accepted the message");
-      return results;
+    })["catch"](function () {
+      return false;
+    });
+  }
+
+  function send(subject, fields) {
+    var list = recipients();
+    if (!list.length) return Promise.reject(new Error("no recipients"));
+
+    var base = Object.assign({ _subject: subject, _template: "table" }, fields);
+
+    // One submission to the first address, copying the rest in. FormSubmit
+    // only requires the address it is posted to to be activated; anyone on
+    // _cc receives their copy without activating anything themselves.
+    var payload = Object.assign({}, base);
+    if (list.length > 1) payload._cc = list.slice(1).join(",");
+
+    return post(list[0], payload).then(function (ok) {
+      if (ok) return true;
+      // the first address is not accepting mail, so try the others directly
+      return Promise.all(list.slice(1).map(function (a) {
+        return post(a, Object.assign({}, base));
+      })).then(function (results) {
+        if (results.indexOf(true) === -1) {
+          throw new Error("no recipient accepted the message");
+        }
+        return true;
+      });
     });
   }
 
