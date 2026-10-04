@@ -20,6 +20,17 @@ Static site: plain HTML, CSS and vanilla JS. No build step, no dependencies.
 To add or change a product, edit `assets/js/data.js` — both the homepage and shop
 render from it.
 
+### Deploying a change
+
+CSS and JS are referenced with a `?v=` cache-buster, because GitHub Pages
+caches assets for 10 minutes and returning visitors would otherwise keep
+running old code after a deploy. Before committing any change under
+`assets/`, run:
+
+    ./bump-version.sh
+
+then commit and push as usual.
+
 ### Run locally
 
     python3 -m http.server 4321
