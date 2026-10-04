@@ -323,7 +323,7 @@
   /* Web3Forms: no activation step, works the moment a key is set.
      Get a key at https://web3forms.com (enter the inbox address,
      they email the key straight back) and paste it here. */
-  var WEB3FORMS_KEY = "";
+  var WEB3FORMS_KEY = "7cf22f80-be76-425b-a4c6-eae0d637bba2";
 
   function viaWeb3Forms(subject, fields) {
     if (!/^[0-9a-f-]{20,}$/i.test(WEB3FORMS_KEY)) return Promise.resolve(false);
