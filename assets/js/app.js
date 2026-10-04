@@ -357,6 +357,12 @@
     return "https://wa.me/" + ORDER_WHATSAPP + "?text=" + encodeURIComponent(text);
   }
 
+  function mailtoLink(f) {
+    return "mailto:" + recipients().join(",") +
+      "?subject=" + encodeURIComponent("New order from farmproducts.in") +
+      "&body=" + encodeURIComponent(orderText(f));
+  }
+
   function orderText(f) {
     var sub = subtotal();
     var ship = sub === 0 || sub >= FREE_SHIP ? 0 : 49;
@@ -459,11 +465,13 @@
         warn.setAttribute("data-order-error", "");
         form.insertBefore(warn, btn);
       }
-      warn.innerHTML = "We couldn't send that order just now, and nothing has been " +
-        "charged or dispatched. Your details are still filled in \u2014 try again, or " +
-        'reach us from the <a href="contact.html">contact page</a> and we\'ll take the ' +
-        "order directly.";
-      toast("Couldn't send that — your order was not placed");
+      warn.innerHTML = "We couldn't send that order automatically, and nothing has been " +
+        "charged or dispatched. Send it to us directly instead \u2014 your details are " +
+        "already filled in below." +
+        '<br><br><a class="btn btn--primary btn--block" style="margin-bottom:8px" href="' +
+        mailtoLink(form) + '">Send this order by email</a>' +
+        '<a class="btn btn--ghost btn--block" href="contact.html">Or contact us</a>';
+      toast("Couldn't send automatically — send it directly below");
     });
   }
 
