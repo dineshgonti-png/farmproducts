@@ -363,7 +363,7 @@
       var p = byId(l.id);
       if (!p) return "";
       return p.name + " (" + p.unit + ") x " + l.qty +
-        (p.price === null ? " rate on request" : " " + money(p.price * l.qty));
+        (p.price === null ? ", rate on request" : " = " + money(p.price * l.qty));
     }).join("\n");
   }
 
@@ -485,7 +485,7 @@
       return;
     }
     var names = inStock.map(function (p) {
-      return p.name + (p.price === null ? "" : " " + money(p.price) + " / " + p.unit);
+      return p.name + (p.price === null ? "" : " at " + money(p.price) + " / " + p.unit);
     }).join(", ");
     el.innerHTML = "<b>Available now: " + names + ".</b> " +
       "The remaining " + out + " lines are out of stock. Use Enquire on any of them and we'll quote.";
