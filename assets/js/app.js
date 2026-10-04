@@ -312,48 +312,80 @@
   }
   function canSend() { return recipients().length > 0; }
 
-  function post(addr, payload) {
-    return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(addr), {
+  /* ------------------------------------------------------------
+     Delivery is tried through more than one provider, in order,
+     so no single service can take ordering down. The first one
+     that accepts the order wins. If none do, the customer is
+     offered a mail-app handoff instead, so an order is never
+     silently lost.
+     ------------------------------------------------------------ */
+
+  /* Web3Forms: no activation step, works the moment a key is set.
+     Get a key at https://web3forms.com (enter the inbox address,
+     they email the key straight back) and paste it here. */
+  var WEB3FORMS_KEY = "";
+
+  function viaWeb3Forms(subject, fields) {
+    if (!/^[0-9a-f-]{20,}$/i.test(WEB3FORMS_KEY)) return Promise.resolve(false);
+    var list = recipients();
+    var body = Object.assign({
+      access_key: WEB3FORMS_KEY,
+      subject: subject,
+      from_name: "FarmProducts website"
+    }, fields);
+    if (list.length > 1) body.cc = list.slice(1).join(",");
+    return fetch("https://api.web3forms.com/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(body)
     }).then(function (r) {
-      // FormSubmit answers 200 with success:"false" when a form is not yet
-      // activated, so the status code alone is not proof of delivery.
-      return r.json().then(function (data) {
-        return r.ok && String(data && data.success) === "true";
-      }, function () {
-        return false;
-      });
-    })["catch"](function () {
-      return false;
-    });
+      return r.json().then(function (d) { return r.ok && d && d.success === true; },
+                           function () { return false; });
+    })["catch"](function () { return false; });
   }
 
-  function send(subject, fields) {
+  function viaFormSubmit(subject, fields) {
     var list = recipients();
-    if (!list.length) return Promise.reject(new Error("no recipients"));
-
+    if (!list.length) return Promise.resolve(false);
     var base = Object.assign({ _subject: subject, _template: "table" }, fields);
 
-    // One submission to the first address, copying the rest in. FormSubmit
-    // only requires the address it is posted to to be activated; anyone on
-    // _cc receives their copy without activating anything themselves.
+    function post(addr, payload) {
+      return fetch("https://formsubmit.co/ajax/" + encodeURIComponent(addr), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload)
+      }).then(function (r) {
+        // answers 200 with success:"false" when a form is not activated,
+        // so the status code alone is not proof of delivery
+        return r.json().then(function (d) {
+          return r.ok && String(d && d.success) === "true";
+        }, function () { return false; });
+      })["catch"](function () { return false; });
+    }
+
     var payload = Object.assign({}, base);
     if (list.length > 1) payload._cc = list.slice(1).join(",");
 
     return post(list[0], payload).then(function (ok) {
       if (ok) return true;
-      // the first address is not accepting mail, so try the others directly
       return Promise.all(list.slice(1).map(function (a) {
         return post(a, Object.assign({}, base));
-      })).then(function (results) {
-        if (results.indexOf(true) === -1) {
-          throw new Error("no recipient accepted the message");
-        }
-        return true;
-      });
+      })).then(function (res) { return res.indexOf(true) > -1; });
     });
+  }
+
+  function send(subject, fields) {
+    var providers = [viaWeb3Forms, viaFormSubmit];
+    var i = 0;
+    function attempt() {
+      if (i >= providers.length) {
+        throw new Error("no provider accepted the order");
+      }
+      return providers[i++](subject, fields).then(function (ok) {
+        return ok ? true : attempt();
+      });
+    }
+    return Promise.resolve().then(attempt);
   }
 
   function orderSummary() {
@@ -448,11 +480,11 @@
         form.insertBefore(warn, btn);
       }
       warn.innerHTML = "We couldn't send that order automatically, and nothing has been " +
-        "charged or dispatched. Send it to us directly instead. Your details are " +
-        "already filled in below." +
+        "charged or dispatched. Send it straight to us instead, either way below. " +
+        "Your details are already filled in." +
         '<br><br><a class="btn btn--primary btn--block" style="margin-bottom:8px" href="' +
         mailtoLink(form) + '">Send this order by email</a>' +
-        '<a class="btn btn--ghost btn--block" href="contact.html">Or contact us</a>';
+        '<a class="btn btn--ghost btn--block" href="tel:+918106457000">Or call +91 81064 57000</a>';
       toast("Couldn't send automatically send it directly below");
     });
   }
